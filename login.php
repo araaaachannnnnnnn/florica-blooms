@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-session_start();
+include 'session.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $conn->real_escape_string($_POST['username']);
@@ -10,6 +10,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = $conn->query($sql);
 
     if ($result && $result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        $_SESSION['user_id'] = $user['id_users_member'];
         $_SESSION['username'] = $username;
         header("Location: index.php"); // Redirect to the main page after successful login
         exit;
@@ -24,84 +26,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Florica Blooms</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="nav.css">
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f2f2f2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-container {
-            background-color: #fff;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 400px;
-        }
-        h1 {
-            text-align: center;
-            color: #4CAF50;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            font-size: 14px;
-            margin-bottom: 5px;
-            color: #333;
-        }
-        input[type="text"],
-        input[type="password"] {
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-        }
-        button {
-            padding: 12px;
-            background-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .error {
-            color: red;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-    </style>
 </head>
 <body>
+<?php include 'header.php'; ?>
+<div class="container">
+    <div class="login-container">
+        <h1>Login</h1>
 
-<div class="login-container">
-    <h1>Login</h1>
+        <?php if (isset($error)): ?>
+            <p class="error"><?php echo $error; ?></p>
+        <?php endif; ?>
 
-    <?php if (isset($error)): ?>
-        <p class="error"><?php echo $error; ?></p>
-    <?php endif; ?>
-
-    <form method="POST">
-        <label for="username">Username:</label>
-        <input type="text" name="username" placeholder="Username" required>
-        
-        <label for="password">Password:</label>
-        <input type="password" name="password" placeholder="Password" required>
-        
-        <button type="submit">Login</button>
-    </form>
+        <form method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            
+            <button type="submit" class="button">Login</button>
+        </form>
+        <button onclick="window.history.back()" class="button">Back</button>
+    </div>
 </div>
-
+<?php include 'footer.php'; ?>
 </body>
 </html>

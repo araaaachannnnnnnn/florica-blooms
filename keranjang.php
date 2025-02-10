@@ -1,14 +1,10 @@
 <?php
-session_start();
-include 'header.php';
 include 'config.php';
+include 'session.php';
 
-// proses kalo keranjang kosong
-if (!isset($_SESSION['cart'])) {
-    $_SESSION['cart'] = array();
-}
+$user = getLoggedInUser();
 
-// menambahkan produk ke keranjang pake (AJAX)
+// Handle adding to cart
 if (isset($_POST['add_to_cart'])) {
     $product_id = $_POST['product_id'];
     $name = $_POST['name'];
@@ -30,7 +26,7 @@ if (isset($_POST['add_to_cart'])) {
     exit();
 }
 
-// ini buat hapus keranjang
+// Handle removing from cart
 if (isset($_POST['remove_from_cart'])) {
     $product_id = $_POST['product_id'];
     if (isset($_SESSION['cart'][$product_id])) {
@@ -40,36 +36,58 @@ if (isset($_POST['remove_from_cart'])) {
     exit();
 }
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keranjang - Florica Blooms</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="nav.css">
+</head>
+<body>
+<?php include 'header.php'; ?>
 <div class="container">
-  <h2>Keranjang Saya</h2>
-
-  <form action="checkout.php" method="post" id="cartForm">
-    <?php if (!empty($_SESSION['cart'])): ?>
-      <div class="cart-list">
-        <?php foreach ($_SESSION['cart'] as $id => $item): ?>
-          <div class="cart-item" data-product-id="<?php echo $id; ?>">
-            <input type="checkbox" name="selected_products[]" value="<?php echo $id; ?>" class="product-checkbox" checked onchange="calculateTotal()">
-            <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
-            <div class="cart-details">
-              <strong><?php echo $item['name']; ?></strong>
-              <p>Harga: Rp<?php echo number_format($item['price']); ?></p>
-              <p>
-                Qty: 
-                <input type="number" name="quantity[<?php echo $id; ?>]" value="<?php echo $item['quantity']; ?>" min="1" max="100" class="qty-input" data-price="<?php echo $item['price']; ?>" onchange="calculateTotal()">
-              </p>
-            </div>
-            <button type="button" class="remove-btn" onclick="removeFromCart('<?php echo $id; ?>')">Hapus</button>
-          </div>
-        <?php endforeach; ?>
-      </div>
-
-      <h3>Total: Rp<span id="totalHarga">0</span></h3>
-      <button type="submit" class="button">Checkout</button>
-    <?php else: ?>
-      <p>Keranjang kosong.</p>
+    <?php if ($user): ?>
+    <div class="profile-container">
+        <h1>Profile</h1>
+        <div class="profile-details">
+            <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
+            <p><strong>Name:</strong> <?php echo isset($user['name']) ? $user['name'] : 'N/A'; ?></p>
+        </div>
+    </div>
     <?php endif; ?>
-  </form>
+
+    <h2>Keranjang Saya</h2>
+    <form action="checkout.php" method="post" id="cartForm">
+        <?php if (!empty($_SESSION['cart'])): ?>
+            <div class="cart-list">
+                <?php foreach ($_SESSION['cart'] as $id => $item): ?>
+                    <div class="cart-item" data-product-id="<?php echo $id; ?>">
+                        <input type="checkbox" name="selected_products[]" value="<?php echo $id; ?>" class="product-checkbox" checked onchange="calculateTotal()">
+                        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
+                        <div class="cart-details">
+                            <strong><?php echo $item['name']; ?></strong>
+                            <p>Harga: Rp<?php echo number_format($item['price']); ?></p>
+                            <?php if (isset($_SESSION['user_id'])): ?>
+                                <p>Harga Diskon: Rp<?php echo number_format($item['price'] * 0.95); ?></p>
+                            <?php endif; ?>
+                            <p>
+                                Qty: 
+                                <input type="number" name="quantity[<?php echo $id; ?>]" value="<?php echo $item['quantity']; ?>" min="1" max="100" class="qty-input" data-price="<?php echo isset($_SESSION['user_id']) ? $item['price'] * 0.95 : $item['price']; ?>" onchange="calculateTotal()">
+                            </p>
+                        </div>
+                        <button type="button" class="remove-btn" onclick="removeFromCart('<?php echo $id; ?>')">Hapus</button>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <h3>Total: Rp<span id="totalHarga">0</span></h3>
+            <button type="submit" class="button">Checkout</button>
+        <?php else: ?>
+            <p>Keranjang kosong.</p>
+        <?php endif; ?>
+    </form>
 </div>
 
 <script>
@@ -91,7 +109,7 @@ function removeFromCart(productId) {
     formData.append('remove_from_cart', '1');
     formData.append('product_id', productId);
 
-    fetch('keranjang2.php', {
+    fetch('keranjang.php', {
         method: 'POST',
         body: formData
     })
@@ -109,6 +127,6 @@ function removeFromCart(productId) {
 window.onload = calculateTotal;
 </script>
 
-<?php
-include 'footer.php';
-?>
+<?php include 'footer.php'; ?>
+</body>
+</html>

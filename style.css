@@ -217,6 +217,15 @@ header .title {
     text-align: center;
     position: relative;
 }
+.login-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+}
 
 .container h2 {
     font-family: 'Pacifico', cursive; /* Menggunakan font Pacifico */
@@ -296,6 +305,29 @@ footer {
 
 .footer-links a:hover {
     color: var(--hover-pink);
+}
+.profile-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+.profile-image img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.profile-details p {
+    font-size: 18px;
+    margin: 10px 0;
 }
 
 /* MEDIA QUERIES */
