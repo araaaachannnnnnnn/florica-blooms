@@ -1,6 +1,6 @@
 <?php
 include 'config.php';
-session_start();
+include 'session.php';
 include 'header.php';
 
 // Proses checkout
@@ -19,13 +19,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_checkout'])) {
         $res = $conn->query($sql);
         if ($res && $res->num_rows > 0) {
             $product = $res->fetch_assoc();
-            $qty = isset($quantities[$id]) ? $quantities[$id] : 1; // Memastikan jumlah dtok cukup
+            $qty = isset($quantities[$id]) ? $quantities[$id] : 1; // Memastikan jumlah stok cukup
             if ($qty > $product['stock']) {
                 echo "<p>Stok tidak mencukupi untuk produk " . $product['name'] . "</p>";
                 include 'footer.php';
                 exit();  // menghentikan checkout kalo stok ga mencukupi
             }
-            $total += $product['price'] * $qty;
+            $price = $product['price'];
+            if (isset($_SESSION['user_id'])) {
+                $price *= 0.95; // Apply 5% discount
+            }
+            $total += $price * $qty;
         }
     }
 
@@ -45,6 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_checkout'])) {
             $product = $res->fetch_assoc();
             $qty = isset($quantities[$id]) ? $quantities[$id] : 1;
             $price = $product['price'];
+            if (isset($_SESSION['user_id'])) {
+                $price *= 0.95; // Apply 5% discount
+            }
 
             $stmt2 = $conn->prepare("INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)");
             $stmt2->bind_param("iiid", $order_id, $id, $qty, $price);
@@ -54,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_checkout'])) {
             $new_stock = $product['stock'] - $qty;
             $conn->query("UPDATE products SET stock='$new_stock' WHERE id='$id'");
 
-            // fitur menghapus cartk
+            // fitur menghapus cart
             if (isset($_SESSION['cart'][$id])) {
                 unset($_SESSION['cart'][$id]);
             }
@@ -80,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['confirm_checkout'])) 
 
 <div class="container">
   <h2>Checkout</h2>
+
+  <?php if (isset($_SESSION['user_id'])): ?>
+    <?php include 'profile_section.php'; ?>
+  <?php endif; ?>
 
   <?php if (!isset($_POST['confirm_checkout'])): ?>
   <form action="checkout.php" method="post" id="checkoutForm">
@@ -107,14 +118,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && !isset($_POST['confirm_checkout'])) 
           if ($res && $res->num_rows > 0):
               $product = $res->fetch_assoc();
               $qty = isset($quantities[$id]) ? $quantities[$id] : 1;
-              $subtotal = $product['price'] * $qty;
+              $price = $product['price'];
+              if (isset($_SESSION['user_id'])) {
+                  $price *= 0.95; // Apply 5% discount
+              }
+              $subtotal = $price * $qty;
               $total += $subtotal;
       ?>
       <tr>
         <td><?php echo $product['name']; ?></td>
-        <td>Rp<?php echo number_format($product['price']); ?></td>
+        <td>Rp<?php echo number_format($price); ?></td>
         <td>
-          <input type="number" name="quantity[<?php echo $id; ?>]" value="<?php echo $qty; ?>" min="1" max="<?php echo $product['stock']; ?>" class="qty-input" data-price="<?php echo $product['price']; ?>" onchange="updateTotal()">
+          <input type="number" name="quantity[<?php echo $id; ?>]" value="<?php echo $qty; ?>" min="1" max="<?php echo $product['stock']; ?>" class="qty-input" data-price="<?php echo $price; ?>" onchange="updateTotal()">
         </td>
         <td>Rp<span class="subtotal"><?php echo number_format($subtotal); ?></span></td>
       </tr>

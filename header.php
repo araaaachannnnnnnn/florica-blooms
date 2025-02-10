@@ -17,8 +17,13 @@ if (session_status() == PHP_SESSION_NONE) {
 <header>
         <div class="top-bar">
             <div class="right-links">
-                <a href="register.php">Daftar</a>
-                <a href="login.php">Log In</a>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <a href="profile.php">Profile</a>
+                    <a href="logout.php">Log Out</a>
+                <?php else: ?>
+                    <a href="register.php">Daftar</a>
+                    <a href="login.php">Log In</a>
+                <?php endif; ?>
             </div>
             <div class="nav-links">
                 <a href="index.php">Beranda</a>
