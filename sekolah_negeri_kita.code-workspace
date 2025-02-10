@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "../sekolah_negeri_kita"
+		},
+		{
+			"path": "../BisnisChain"
+		},
+		{
+			"path": "../phpmvc"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
