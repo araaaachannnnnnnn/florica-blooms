@@ -1,5 +1,6 @@
 <?php
 include 'config.php';
+include 'session.php';
 include 'header.php';
 
 $search = "";
@@ -21,6 +22,9 @@ $result = $conn->query($sql);
                     <h4><?php echo $row['name']; ?></h4>
                     <p><?php echo $row['description']; ?></p>
                     <p>Rp<?php echo number_format($row['price']); ?></p>
+                    <?php if (isLoggedIn()): ?>
+                        <p>Harga Diskon: Rp<?php echo number_format($row['price'] * 0.95); ?></p>
+                    <?php endif; ?>
                     <p>Stok Tersedia: <?php echo $row['stock']; ?></p> <!-- nampilin stok produk -->
                     <form class="add-to-cart-form" data-product-id="<?php echo $row['id']; ?>" data-product-name="<?php echo $row['name']; ?>" data-product-price="<?php echo $row['price']; ?>" data-product-image="<?php echo $row['image']; ?>" data-product-stock="<?php echo $row['stock']; ?>">
                         <button type="button" class="button add-to-cart">
