@@ -37,6 +37,9 @@ Welcome to Florica Blooms, an E-commerce website dedicated to providing beautifu
 - **View Profile**: Users can view their profile information.
 - **Upload Profile Picture**: Users can upload a profile picture to personalize their profile.
 
+### 🔍 Search Feature
+- **Search Products**: Users can search for products by name. Only the products that match the search query will be displayed, and others will be hidden.
+
 ### 🛠️ Admin Features
 - **Create Product**: Admins can add new products to the catalog.
 - **Edit Product**: Admins can edit existing products.
