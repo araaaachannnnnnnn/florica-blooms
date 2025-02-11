@@ -15,6 +15,6 @@
 
 .nav-links a:hover {
     color: #fff; /* Change text color on hover */
-    background-color: #4CAF50; /* Add background color on hover */
+    background-color: #C71585; /* Change background color to dark pink on hover */
     border-radius: 5px; /* Add border radius for rounded corners */
 }

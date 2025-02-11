@@ -12,6 +12,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="nav.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="search.js" defer></script>
 </head>
 <body>
 <header>
@@ -31,7 +32,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 <a href="kategori.php">Kategori</a>
             </div>
             <div class="search-bar">
-                <input type="text" placeholder="Cari produk...">
+                <input type="text" id="searchInput" placeholder="Cari produk...">
                 <button><i class="fas fa-search"></i></button>
             </div>
             <div class="cart">

@@ -41,7 +41,7 @@ include 'session.php';
         if ($result->num_rows > 0):
             while ($row = $result->fetch_assoc()):
         ?>
-            <div class="product">
+            <div class="product" data-name="<?php echo $row['name']; ?>">
                 <img src="<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>">
                 <h4><?php echo $row['name']; ?></h4>
                 <p><?php echo $row['description']; ?></p>
