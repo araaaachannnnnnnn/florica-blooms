@@ -27,12 +27,17 @@ $user = $result->fetch_assoc();
     <div class="profile-container">
         <h1>Profile</h1>
         <div class="profile-image">
-            <img src="<?php echo $user['profile_image']; ?>" alt="Profile Image">
+            <?php if ($user['profile_image']): ?>
+                <img src="<?php echo $user['profile_image']; ?>" alt="Profile Image">
+            <?php else: ?>
+                <img src="img/default_profile.png" alt="Default Profile Image">
+            <?php endif; ?>
         </div>
         <div class="profile-details">
             <p><strong>Username:</strong> <?php echo $user['username']; ?></p>
             <p><strong>Name:</strong> <?php echo isset($user['name']) ? $user['name'] : 'N/A'; ?></p>
         </div>
+        <a href="upload_profile_image.php" class="button">Upload Profile Image</a>
     </div>
 </div>
 <?php include 'footer.php'; ?>
