@@ -10,6 +10,7 @@ include 'session.php';
     <title>Florica Blooms</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="nav.css">
+    <link rel="stylesheet" href="product.css">
 </head>
 <body>
 <?php include 'header.php'; ?>
@@ -34,7 +35,7 @@ include 'session.php';
     <?php endif; ?>
 
     <h2>Featured Products</h2>
-    <div class="product-grid">
+    <div class="product-gallery">
         <?php
         $sql = "SELECT * FROM products LIMIT 4";
         $result = $conn->query($sql);
